@@ -2,7 +2,15 @@ import pytest
 import json
 from fastapi.testclient import TestClient
 from app import app
-from tests.test_data_wikipedia import valid_input, missing_topic, negative_n, missing_n, invalid_namespace_filter, test_data_list
+from tests.test_data_wikipedia import (
+    valid_input,
+    missing_topic,
+    negative_n,
+    missing_n,
+    invalid_namespace_filter,
+    test_data_list,
+)
+
 
 class TestWordFrequencyAnalysis:
 
@@ -29,7 +37,13 @@ class TestWordFrequencyAnalysis:
 
         if "namespace_filter" in test_data:
             if isinstance(test_data["namespace_filter"], list):
-                assert all(any(namespace.lower() in word.lower() for namespace in test_data["namespace_filter"]) for word in result["top_words"])
+                assert all(
+                    any(
+                        namespace.lower() in word.lower()
+                        for namespace in test_data["namespace_filter"]
+                    )
+                    for word in result["top_words"]
+                )
 
     def test_word_frequency_analysis_missing_topic(self, client):
         response = client.get("/word_frequency_analysis", params=missing_topic)

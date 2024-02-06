@@ -11,12 +11,6 @@ from logger import logger
 wikipedia_app = APIRouter(prefix="", tags=["wikipedia-app"])
 search_history = []
 
-
-async def authenticate_user(api_key: str = Header(..., convert_underscores=False)):
-    if api_key != "your_secret_api_key":
-        raise HTTPException(status_code=401, detail="Unauthorized")
-
-
 @wikipedia_app.get("/word_frequency_analysis")
 async def word_frequency_analysis(
     params: WordFrequencyParams = Depends(validate_and_parse_params),
@@ -36,12 +30,15 @@ async def word_frequency_analysis(
         result = {"topic": topic, "top_words": top_words}
         search_history.append(result)
         return JSONResponse(
-            content= result,
-            status_code= 200,
+            content=result,
+            status_code=200,
         )
     except HTTPException as e:
         if "validation_error" in str(e):
-            return JSONResponse(status_code=422, detail="Required parameters not provided. Please provide  required parameters.")
+            return JSONResponse(
+                status_code=422,
+                detail="Required parameters not provided. Please provide  required parameters.",
+            )
         else:
             raise e
     except Exception as e:
@@ -53,4 +50,4 @@ async def search_history_endpoint():
     if search_history:
         return search_history
     else:
-        return JSONResponse(status_code=404, content = "No previous searches found.")
+        return JSONResponse(status_code=404, content="No previous searches found.")

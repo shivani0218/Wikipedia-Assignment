@@ -3,6 +3,10 @@ from fastapi import HTTPException
 import wikipediaapi
 from collections import Counter
 from logger import logger
+from nltk.corpus import stopwords
+import nltk
+
+nltk.download("stopwords")
 import re
 
 
@@ -21,7 +25,10 @@ def validate_and_parse_params(params: WordFrequencyParams):
 
 def get_wikipedia_text(topic, namespace_filter=None):
     try:
-        wiki_wiki = wikipediaapi.Wikipedia(user_agent="Wikipedia/(singhshivani3416@gmail.com) Python/3.10",language="en")
+        wiki_wiki = wikipediaapi.Wikipedia(
+            user_agent="Wikipedia/(singhshivani3416@gmail.com) Python/3.10",
+            language="en",
+        )
         page_py = wiki_wiki.page(topic)
 
         if page_py.exists() and "#REDIRECT" in page_py.text.upper():
@@ -48,8 +55,15 @@ def get_wikipedia_text(topic, namespace_filter=None):
 
 def analyze_text(text, n):
     try:
-        words = text.split()
-        word_frequencies = Counter(words)
-        return dict(word_frequencies.most_common(n))
+        stop_words = set(stopwords.words("english"))
+        words = text.lower().split()
+        filtered_words = [word for word in words if word not in stop_words]
+        word_frequencies = Counter(filtered_words)
+
+        top_words = [
+            {"word": word, "count": count}
+            for word, count in word_frequencies.most_common(n)
+        ]
+        return top_words
     except Exception as e:
         logger.error(str(e))
