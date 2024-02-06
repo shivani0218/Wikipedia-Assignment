@@ -46,3 +46,6 @@ This API interacts with Wikipedia to perform specific text analysis tasks. It co
 - **Negative or Zero `n`**: If the `n` parameter is negative or zero, the API returns an error indicating that `n` must be a positive integer.
 
 - **Invalid Namespace Filter**: If the provided namespace filter is invalid or not recognized, the API returns an error indicating that the namespace filter must be a list of valid namespaces.
+
+### Please refer to http://localhost:5069/docs#/ for documentaion of fastApi app.
+  Note - Start the app before directing to above link.
